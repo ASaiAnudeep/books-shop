@@ -3,7 +3,7 @@ import { cartReducer } from "@/context/CartContext";
 import { books } from "@/lib/books";
 
 describe("cartReducer", () => {
-  const seed = { items: [], identity: {} };
+  const seed = { items: [], identity: {}, wishlistIds: [] };
 
   it("adds a new item and increments existing item quantity", () => {
     const once = cartReducer(seed, { type: "add", payload: { book: books[0] } });
@@ -31,11 +31,21 @@ describe("cartReducer", () => {
   it("clears items but keeps identity", () => {
     const withState = {
       items: [{ book: books[2], quantity: 1 }],
-      identity: { name: "Reader", email: "reader@example.com" }
+      identity: { name: "Reader", email: "reader@example.com" },
+      wishlistIds: [books[2].id]
     };
     const cleared = cartReducer(withState, { type: "clear" });
 
     expect(cleared.items).toHaveLength(0);
     expect(cleared.identity.email).toBe("reader@example.com");
+    expect(cleared.wishlistIds).toEqual([books[2].id]);
+  });
+
+  it("toggles wishlist membership", () => {
+    const withOne = cartReducer(seed, { type: "toggleWishlist", payload: { bookId: books[0].id } });
+    const withoutOne = cartReducer(withOne, { type: "toggleWishlist", payload: { bookId: books[0].id } });
+
+    expect(withOne.wishlistIds).toEqual([books[0].id]);
+    expect(withoutOne.wishlistIds).toEqual([]);
   });
 });

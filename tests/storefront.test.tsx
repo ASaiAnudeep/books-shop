@@ -12,6 +12,7 @@ vi.mock("@/analytics/client", () => ({
 
 describe("storefront interactions", () => {
   afterEach(() => {
+    window.localStorage.clear();
     cleanup();
   });
 
@@ -47,5 +48,39 @@ describe("storefront interactions", () => {
     await user.click(screen.getAllByRole("button", { name: "Add" })[0]);
 
     expect(screen.getByRole("link", { name: /cart \(1\)/i })).toBeInTheDocument();
+  });
+
+  it("toggles wishlist state for one book without affecting cart", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <CartProvider>
+        <Header />
+        <StorefrontClient />
+      </CartProvider>
+    );
+
+    const mapmakerSave = screen.getByRole("button", { name: /save the last mapmaker to wishlist/i });
+    expect(mapmakerSave).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("link", { name: /cart \(0\)/i })).toBeInTheDocument();
+
+    await user.click(mapmakerSave);
+
+    expect(screen.getByRole("button", { name: /remove the last mapmaker from wishlist/i })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    expect(screen.getByRole("button", { name: /save midnight conservatory to wishlist/i })).toHaveAttribute(
+      "aria-pressed",
+      "false"
+    );
+    expect(screen.getByRole("link", { name: /cart \(0\)/i })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /remove the last mapmaker from wishlist/i }));
+
+    expect(screen.getByRole("button", { name: /save the last mapmaker to wishlist/i })).toHaveAttribute(
+      "aria-pressed",
+      "false"
+    );
   });
 });
