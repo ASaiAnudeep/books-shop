@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "checkout_started.v1",
+  "type": "object",
+  "required": ["name", "path", "source", "itemCount", "cartValue"],
+  "properties": {
+    "name": { "const": "checkout_started" },
+    "path": { "type": "string", "minLength": 1 },
+    "source": { "const": "web" },
+    "itemCount": { "type": "integer", "minimum": 1 },
+    "cartValue": { "type": "number", "exclusiveMinimum": 0 },
+    "email": { "type": "string", "format": "email" }
+  },
+  "additionalProperties": false
+}
