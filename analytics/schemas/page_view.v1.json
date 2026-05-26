@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "page_view.v1",
+  "type": "object",
+  "required": ["name", "path", "source", "pageName"],
+  "properties": {
+    "name": { "const": "page_view" },
+    "path": { "type": "string", "minLength": 1 },
+    "source": { "const": "web" },
+    "pageName": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

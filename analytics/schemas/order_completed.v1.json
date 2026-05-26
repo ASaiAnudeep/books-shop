@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "order_completed.v1",
+  "type": "object",
+  "required": ["name", "path", "source", "orderId", "itemCount", "total", "email"],
+  "properties": {
+    "name": { "const": "order_completed" },
+    "path": { "type": "string", "minLength": 1 },
+    "source": { "const": "web" },
+    "orderId": { "type": "string", "minLength": 1 },
+    "itemCount": { "type": "integer", "minimum": 1 },
+    "total": { "type": "number", "exclusiveMinimum": 0 },
+    "email": { "type": "string", "format": "email" }
+  },
+  "additionalProperties": false
+}

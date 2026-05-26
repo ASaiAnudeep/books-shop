@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+  background: radial-gradient(circle at top, #fbf7ef 0%, #f5efe3 45%, #ede5d6 100%);
+  color: #201915;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
