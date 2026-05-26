@@ -6,18 +6,21 @@ import { Book, CartItem, CustomerIdentity } from "@/types";
 type CartState = {
   items: CartItem[];
   identity: CustomerIdentity;
+  wishlistIds: string[];
 };
 
 type CartAction =
   | { type: "add"; payload: { book: Book; quantity?: number } }
   | { type: "remove"; payload: { bookId: string } }
   | { type: "updateQty"; payload: { bookId: string; quantity: number } }
+  | { type: "toggleWishlist"; payload: { bookId: string } }
   | { type: "setIdentity"; payload: CustomerIdentity }
   | { type: "clear" };
 
 const initialState: CartState = {
   items: [],
-  identity: {}
+  identity: {},
+  wishlistIds: []
 };
 
 export const cartReducer = (state: CartState, action: CartAction): CartState => {
@@ -55,6 +58,15 @@ export const cartReducer = (state: CartState, action: CartAction): CartState => 
       };
     case "setIdentity":
       return { ...state, identity: { ...state.identity, ...action.payload } };
+    case "toggleWishlist": {
+      const exists = state.wishlistIds.includes(action.payload.bookId);
+      return {
+        ...state,
+        wishlistIds: exists
+          ? state.wishlistIds.filter((id) => id !== action.payload.bookId)
+          : [...state.wishlistIds, action.payload.bookId]
+      };
+    }
     case "clear":
       return { ...state, items: [] };
     default:
@@ -67,6 +79,8 @@ type CartContextValue = {
   dispatch: Dispatch<CartAction>;
   itemCount: number;
   subtotal: number;
+  toggleWishlist: (bookId: string) => void;
+  isWishlisted: (bookId: string) => boolean;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -88,7 +102,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
 
       try {
-        return JSON.parse(raw) as CartState;
+        const parsed = JSON.parse(raw) as Partial<CartState>;
+        return {
+          items: parsed.items ?? [],
+          identity: parsed.identity ?? {},
+          wishlistIds: []
+        };
       } catch {
         return seed;
       }
@@ -102,8 +121,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(() => {
     const itemCount = state.items.reduce((sum, item) => sum + item.quantity, 0);
     const subtotal = state.items.reduce((sum, item) => sum + item.quantity * item.book.price, 0);
+    const isWishlisted = (bookId: string) => state.wishlistIds.includes(bookId);
+    const toggleWishlist = (bookId: string) => dispatch({ type: "toggleWishlist", payload: { bookId } });
 
-    return { state, dispatch, itemCount, subtotal };
+    return { state, dispatch, itemCount, subtotal, toggleWishlist, isWishlisted };
   }, [state]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
