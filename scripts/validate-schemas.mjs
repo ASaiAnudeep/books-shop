@@ -47,6 +47,24 @@ const samples = {
     itemCount: 2,
     total: 49,
     email: "reader@example.com"
+  },
+  "wishlist_item_added.v1.json": {
+    name: "wishlist_item_added",
+    path: "/",
+    source: "web",
+    productId: "b001",
+    title: "The Last Mapmaker",
+    genre: "Fiction",
+    price: 22
+  },
+  "wishlist_item_removed.v1.json": {
+    name: "wishlist_item_removed",
+    path: "/",
+    source: "web",
+    productId: "b001",
+    title: "The Last Mapmaker",
+    genre: "Fiction",
+    price: 22
   }
 };
 
