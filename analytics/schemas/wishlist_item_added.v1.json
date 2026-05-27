@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "wishlist_item_added.v1",
+  "type": "object",
+  "required": ["name", "path", "source", "productId", "title", "genre", "price"],
+  "properties": {
+    "name": { "const": "wishlist_item_added" },
+    "path": { "type": "string", "minLength": 1 },
+    "source": { "const": "web" },
+    "productId": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "genre": { "type": "string", "minLength": 1 },
+    "price": { "type": "number", "exclusiveMinimum": 0 }
+  },
+  "additionalProperties": false
+}

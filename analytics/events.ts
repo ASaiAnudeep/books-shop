@@ -39,9 +39,27 @@ export type OrderCompletedEvent = BaseContext & {
   email: string;
 };
 
+export type WishlistItemAddedEvent = BaseContext & {
+  name: "wishlist_item_added";
+  productId: string;
+  title: string;
+  genre: string;
+  price: number;
+};
+
+export type WishlistItemRemovedEvent = BaseContext & {
+  name: "wishlist_item_removed";
+  productId: string;
+  title: string;
+  genre: string;
+  price: number;
+};
+
 export type TrackEvent =
   | PageViewEvent
   | ProductViewedEvent
   | CartItemAddedEvent
   | CheckoutStartedEvent
-  | OrderCompletedEvent;
+  | OrderCompletedEvent
+  | WishlistItemAddedEvent
+  | WishlistItemRemovedEvent;

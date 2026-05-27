@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { BookCover } from "@/components/BookCover";
-import { trackCartItemAdded } from "@/analytics/track";
+import { trackCartItemAdded, trackWishlistItemAdded, trackWishlistItemRemoved } from "@/analytics/track";
 import { useCart } from "@/context/CartContext";
 import { Book } from "@/types";
 
@@ -23,6 +23,31 @@ export const BookCard = ({ book }: { book: Book }) => {
     });
   };
 
+  const handleWishlistToggle = () => {
+    toggleWishlist(book.id);
+    if (saved) {
+      trackWishlistItemRemoved({
+        name: "wishlist_item_removed",
+        path: window.location.pathname,
+        source: "web",
+        productId: book.id,
+        title: book.title,
+        genre: book.genre,
+        price: book.price
+      });
+    } else {
+      trackWishlistItemAdded({
+        name: "wishlist_item_added",
+        path: window.location.pathname,
+        source: "web",
+        productId: book.id,
+        title: book.title,
+        genre: book.genre,
+        price: book.price
+      });
+    }
+  };
+
   return (
     <article className="rounded-xl border border-fog bg-white p-4 shadow-card">
       <BookCover token={book.coverToken} title={book.title} />
@@ -37,7 +62,7 @@ export const BookCard = ({ book }: { book: Book }) => {
             type="button"
             aria-pressed={saved}
             aria-label={saved ? `Remove ${book.title} from wishlist` : `Save ${book.title} to wishlist`}
-            onClick={() => toggleWishlist(book.id)}
+            onClick={handleWishlistToggle}
             className="rounded-md border border-fog px-3 py-2 text-sm"
           >
             {saved ? "Saved" : "Save"}

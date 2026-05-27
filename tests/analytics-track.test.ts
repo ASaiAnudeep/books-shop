@@ -17,7 +17,9 @@ import {
   trackCheckoutStarted,
   trackOrderCompleted,
   trackPageView,
-  trackProductViewed
+  trackProductViewed,
+  trackWishlistItemAdded,
+  trackWishlistItemRemoved
 } from "@/analytics/track";
 
 describe("analytics track helpers", () => {
@@ -79,6 +81,46 @@ describe("analytics track helpers", () => {
         itemCount: 1,
         total: 22,
         email: "reader@example.com"
+      })
+    ).toThrow();
+  });
+
+  it("tracks wishlist_item_added", () => {
+    trackWishlistItemAdded({
+      name: "wishlist_item_added",
+      path: "/",
+      source: "web",
+      productId: "b001",
+      title: "Book",
+      genre: "Fiction",
+      price: 22
+    });
+    expect(mocks.track).toHaveBeenCalledWith("wishlist_item_added", expect.objectContaining({ productId: "b001" }));
+  });
+
+  it("tracks wishlist_item_removed", () => {
+    trackWishlistItemRemoved({
+      name: "wishlist_item_removed",
+      path: "/",
+      source: "web",
+      productId: "b001",
+      title: "Book",
+      genre: "Fiction",
+      price: 22
+    });
+    expect(mocks.track).toHaveBeenCalledWith("wishlist_item_removed", expect.objectContaining({ productId: "b001" }));
+  });
+
+  it("throws when wishlist_item_added price is invalid", () => {
+    expect(() =>
+      trackWishlistItemAdded({
+        name: "wishlist_item_added",
+        path: "/",
+        source: "web",
+        productId: "b001",
+        title: "Book",
+        genre: "Fiction",
+        price: -5
       })
     ).toThrow();
   });

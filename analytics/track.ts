@@ -6,7 +6,9 @@ import {
   CheckoutStartedEvent,
   OrderCompletedEvent,
   PageViewEvent,
-  ProductViewedEvent
+  ProductViewedEvent,
+  WishlistItemAddedEvent,
+  WishlistItemRemovedEvent
 } from "@/analytics/events";
 import { getRudder, initRudder } from "@/analytics/client";
 
@@ -46,6 +48,20 @@ const orderCompletedSchema = baseSchema.extend({
   email: z.string().email()
 });
 
+const wishlistItemAddedSchema = baseSchema.extend({
+  productId: z.string().min(1),
+  title: z.string().min(1),
+  genre: z.string().min(1),
+  price: z.number().positive()
+});
+
+const wishlistItemRemovedSchema = baseSchema.extend({
+  productId: z.string().min(1),
+  title: z.string().min(1),
+  genre: z.string().min(1),
+  price: z.number().positive()
+});
+
 const safeTrack = (event: string, payload: Record<string, unknown>) => {
   initRudder();
   const rudder = getRudder();
@@ -81,5 +97,15 @@ export const trackCheckoutStarted = (payload: CheckoutStartedEvent) => {
 
 export const trackOrderCompleted = (payload: OrderCompletedEvent) => {
   orderCompletedSchema.parse(payload);
+  safeTrack(payload.name, payload);
+};
+
+export const trackWishlistItemAdded = (payload: WishlistItemAddedEvent) => {
+  wishlistItemAddedSchema.parse(payload);
+  safeTrack(payload.name, payload);
+};
+
+export const trackWishlistItemRemoved = (payload: WishlistItemRemovedEvent) => {
+  wishlistItemRemovedSchema.parse(payload);
   safeTrack(payload.name, payload);
 };
